@@ -1,0 +1,10 @@
+[project]
+name = "analise-campanha-whatsapp"
+version = "0.1.0"
+description = "Projeto feito para automatizar um processo de análise de campanhas no sistema em meu estágio."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "openpyxl>=3.1.5",
+    "pandas>=3.0.1",
+]
