@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+import sys
 
 """
     Planilha chega em .xlsx com o Header.
@@ -18,9 +19,12 @@ INPUT_PATH = BASE_PATH / "data" / "Campanha-Novo-Livinho + Grupo.xlsx"
 
 # Carrega os dados em um DataFrame do Pandas
 def load_data(path: Path) -> pd.DataFrame:
-    df = pd.read_excel(path)
-    return df
-
+    try:
+        df = pd.read_excel(path)
+        return df
+    except Exception as e:
+        print(f"Erro ao carregar os dados, arquivo inexistente ou em formato ilegível ao program: {e}")
+        sys.exit(1)
 
 # Analisa os dados e gera um relatório
 def analyze_data(df: pd.DataFrame) -> str:
