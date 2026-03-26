@@ -5,8 +5,8 @@ No estágio onde trabalho, é possível fazer o campanho de envios em massa por 
 
 ## Fluxo
 
-> 1. Tenta ler o Dataframe - [Código aqui](https://github.com/dhiegoemmanuel2006/analise-campanha/blob/master/src/analysis.py#L19)
+> 1. Tenta ler o Dataframe - [Código aqui](https://github.com/dhiegoemmanuel2006/analise-campanha/blob/master/src/analysis.py#L20)
 
-> 2. Tira os principais indices de performance da campanha que podem ser relevante - [Código aqui](https://github.com/dhiegoemmanuel2006/analise-campanha/blob/master/src/analysis.py#L25)
+> 2. Tira os principais indices de performance da campanha que podem ser relevante - [Código aqui](https://github.com/dhiegoemmanuel2006/analise-campanha/blob/master/src/analysis.py#L29)
 
-> 3. Imprime em formato Markdown de uma forma que seja possível só Copia e Colar na conversa com o cliente/executor da campanha. [Código aqui](https://github.com/dhiegoemmanuel2006/analise-campanha/blob/master/src/analysis.py#L33)
+> 3. Imprime em formato Markdown de uma forma que seja possível só Copia e Colar na conversa com o cliente/executor da campanha. [Código aqui](https://github.com/dhiegoemmanuel2006/analise-campanha/blob/master/src/analysis.py#L37)
