@@ -48,12 +48,9 @@ def analyze_data(df: pd.DataFrame) -> str:
     taxa_resposta = (mensagens_respondidas / total_mensagens) * 100
 
     count_estados = df["Estado"].fillna("Desconhecido").value_counts()
-    largura_estado = max((len(str(e)) for e in count_estados.index), default=0)
-    largura_valor = max((len(str(v)) for v in count_estados.values), default=1)
-    linhas_estados = "\n".join(
-        f"{str(estado).ljust(largura_estado)}  {str(qtd).rjust(largura_valor)}"
-        for estado, qtd in count_estados.items()
-    ) or "(sem dados)"
+    linhas_estados = [
+        f"• {estado}: *{qtd}*" for estado, qtd in count_estados.items()
+    ] or ["• (sem dados)"]
 
     linhas = [
         "📊 *Relatório de Análise de Campanha*",
@@ -64,9 +61,7 @@ def analyze_data(df: pd.DataFrame) -> str:
         f"• Taxa de resposta: *{taxa_resposta:.2f}%*",
         "",
         "*Distribuição por estado*",
-        "```",
-        linhas_estados,
-        "```",
+        *linhas_estados,
     ]
     return "\n".join(linhas)
 
