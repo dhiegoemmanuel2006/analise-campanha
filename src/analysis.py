@@ -16,25 +16,60 @@ BASE_PATH = Path(__file__).parent.parent
 
 INPUT_PATH = BASE_PATH / "data" / "Campanha-Novo-Livinho + Grupo.xlsx"
 
+REQUIRED_COLUMNS = {"Respondida", "Estado"}
 
-# Carrega os dados em um DataFrame do Pandas
+
 def load_data(path: Path) -> pd.DataFrame:
-    try:
-        df = pd.read_excel(path)
-        return df
-    except Exception as e:
-        print(f"Erro ao carregar os dados, arquivo inexistente ou em formato ilegível ao program: {e}")
+    if not path.exists():
+        print(f"Erro: arquivo não encontrado em '{path}'.")
         sys.exit(1)
 
-# Analisa os dados e gera um relatório
+    if path.suffix.lower() not in {".xlsx", ".xls"}:
+        print(f"Erro: formato inválido ('{path.suffix}'). Use .xlsx ou .xls.")
+        sys.exit(1)
+
+    try:
+        return pd.read_excel(path)
+    except Exception as e:
+        print(f"Erro ao carregar o arquivo: {e}")
+        sys.exit(1)
+
+
 def analyze_data(df: pd.DataFrame) -> str:
+    missing = REQUIRED_COLUMNS - set(df.columns)
+    if missing:
+        return f"Erro: colunas obrigatórias ausentes na planilha: {', '.join(sorted(missing))}."
+
     total_mensagens = len(df)
-    mensagens_respondidas = df[df['Respondida'] == 'Sim']
+    if total_mensagens == 0:
+        return "Planilha vazia: não há mensagens para analisar."
 
-    taxa_resposta = (len(mensagens_respondidas) / total_mensagens) * 100
+    respondidas_series = df["Respondida"].astype(str).str.strip().str.casefold()
+    mensagens_respondidas = int((respondidas_series == "sim").sum())
+    taxa_resposta = (mensagens_respondidas / total_mensagens) * 100
 
-    count_estados = df['Estado'].value_counts()
-    return f"--- *Relatório de Análise de Campanha* ---\n*Dados principais*\nTotal de Mensagens Enviadas: {total_mensagens}\nTotal de Mensagens Respondidas: {len(mensagens_respondidas)}\nTaxa de Resposta: {taxa_resposta:.2f}%\n\n*Distribuição do envio*\n{count_estados.to_string()}"
+    count_estados = df["Estado"].fillna("Desconhecido").value_counts()
+    largura_estado = max((len(str(e)) for e in count_estados.index), default=0)
+    largura_valor = max((len(str(v)) for v in count_estados.values), default=1)
+    linhas_estados = "\n".join(
+        f"{str(estado).ljust(largura_estado)}  {str(qtd).rjust(largura_valor)}"
+        for estado, qtd in count_estados.items()
+    ) or "(sem dados)"
+
+    linhas = [
+        "📊 *Relatório de Análise de Campanha*",
+        "",
+        "*Dados principais*",
+        f"• Mensagens enviadas: *{total_mensagens}*",
+        f"• Mensagens respondidas: *{mensagens_respondidas}*",
+        f"• Taxa de resposta: *{taxa_resposta:.2f}%*",
+        "",
+        "*Distribuição por estado*",
+        "```",
+        linhas_estados,
+        "```",
+    ]
+    return "\n".join(linhas)
 
 if __name__ == "__main__":
     df = load_data(INPUT_PATH)
